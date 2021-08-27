@@ -10,7 +10,6 @@ const app       = express();
 const fs        = require('fs');
 const bodyParser= require('body-parser');
 // const methods   = require('./methods');
-const axios     = require('axios');
 
 // const stringify = require('json-stringify-pretty-compact');
 
