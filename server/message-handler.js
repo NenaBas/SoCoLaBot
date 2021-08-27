@@ -191,6 +191,8 @@ module.exports = function(wsServer) {
         function handleChatbotReply(witResponse) {
             wit_Reply = witResponse;
 
+            console.log(witResponse);
+
             // if the message hasn't matched to any intent
             if (isEmptyObject(witResponse.intents)) {
                 console.log("[wit] no intent matched!")

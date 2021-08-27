@@ -25,8 +25,8 @@ if (
 }
 
 const port = process.env.port || 8443;
-// const hostname = '139.91.183.118';
-const hostname = '192.168.1.7';
+const hostname = '139.91.183.121';
+// const hostname = '192.168.1.4';
 
 const httpserver= require('https').createServer({
     key:  fs.readFileSync(__dirname+'/server.key'),
@@ -116,7 +116,7 @@ router.use(function(req, res, next) {
 
 // test router (accessed at GET http://localhost:80/api)
 router.get('/', function(req, res) {
-    console.log("---> API CALL\t",req.session.id);
+    // console.log("---> API CALL\t",req.session.id);
     res.write(`<h1>Welcome to the API!</h1>`);
     res.end();
 });

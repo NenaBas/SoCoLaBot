@@ -7,8 +7,8 @@ var loading = false;
 
 var quickReplies_btnActive = false;
 
-// const GUIaddr = 'https://139.91.183.118:443/';
-const GUIaddr = 'https://192.168.1.2:443/';
+const GUIaddr = 'https://139.91.183.121:443/';
+// const GUIaddr = 'https://192.168.1.4:80/';
 
 /**
  * Scrolls the contents of a container to the bottom
@@ -28,13 +28,13 @@ function scrollContents(container) {
 const SpeechRecognition     = window.SpeechRecognition || window.webkitSpeechRecognition;
 // var SpeechGrammarList       = SpeechGrammarList || webkitSpeechGrammarList
 var SpeechRecognitionEvent  = SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent
-const recognition = new SpeechRecognition();
-recognition.lang = 'en-US';
+const recognition           = new SpeechRecognition();
+recognition.lang            = 'en-US';
 // false for just final results
-recognition.interimResults = false;
+recognition.interimResults  = false;
 // true for continuous results captured
 // false for single result each time recognition is started
-recognition.continuous = true;
+recognition.continuous      = true;
 
 recognition.onresult = function(e) {
     console.log("-------SPEECH RECOGNITION RESULT--------")
@@ -96,8 +96,8 @@ function permission_askForMic() {
  * WebSocket Setup
  */
 
-// const socket = new WebSocket("wss://139.91.183.118:8443");
-const socket = new WebSocket("wss://192.168.1.7:8443");
+const socket = new WebSocket("wss://139.91.183.121:8443");
+// const socket = new WebSocket("wss://192.168.1.4");
 
 var socketJSONmsg = {
     type: "types",
