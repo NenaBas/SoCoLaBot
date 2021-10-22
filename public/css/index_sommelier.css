@@ -1,0 +1,12 @@
+.outer-container{
+    display: flex;
+    flex-direction: row;
+}
+
+section{
+    width: 50%;
+}
+
+.display-container{
+    background-color: lightblue;
+}

@@ -25,27 +25,26 @@ if (
 
 const port = process.env.port || 8443;
 const hostname = '139.91.183.121';
-// const hostname = '192.168.1.4';
 
-const httpserver= require('https').createServer({
-    key:  fs.readFileSync(__dirname+'/server.key'),
-    cert: fs.readFileSync(__dirname+'/server.cer'),
+const httpserver= require('http').createServer({
+// const httpserver= require('https').createServer({
+//     key:  fs.readFileSync(__dirname+'/server.key'),
+//     cert: fs.readFileSync(__dirname+'/server.cer'),
     // allow self-signed certs (never use this in production)
-    rejectUnauthorized: false,
-    requestCert: false
+    // rejectUnauthorized: false,
+    // requestCert: false
 }, app);
 
 // httpserver.listen(port, hostname, () => {
 httpserver.listen(port, hostname, () => {
-    console.log(`Chatbot Server is listening at     https://${hostname}:${port}`);
-    // console.log(`Chatbot Server is listening at     https://localhost:${port}`);
+    console.log(`Chatbot Server is listening at     http://${hostname}:${port}`);
 })
 // -------------------------------------------------
 // WebSocket server
 // -------------------------------------------------
 // set up headless websocket server that prints any
 // event that come in
-const attachMessageHandler = require('./message-handler');
+const attachMessageHandler = require('./message-handler-sommelier');
 const { json } = require('body-parser');
 
 const wsServer = new ws.Server({
@@ -193,4 +192,4 @@ router.route('/chatbot/updateObjects')
 
 
 
-module.exports = router;
+// module.exports = router;

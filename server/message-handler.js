@@ -20,7 +20,7 @@ module.exports = function(wsServer) {
     // we will be listening to set the scenario
     // TODO: change the setting so the scenario can be changed anytime, not only at the beginning
     var listeningForScenarioSetup= true; 
-    var inProgress_captureAction = false;
+    // var inProgress_captureAction = false;
     var inProgress_captureObject = false;
     var sessionDone              = false;
 
@@ -53,20 +53,21 @@ module.exports = function(wsServer) {
 
     //----------------------------------------------
     // WIT SPEECH
-    function speechToText(speech2textFile) {
-        var witai_speech = require('witai-speech');
+    // function speechToText(speech2textFile) {
+    //     var witai_speech = require('witai-speech');
         
-        witai_speech.ASR({
-            file: './demo.wav', 
-            developer_key: process.env.WIT_KEY,
-            }, function (err, res) {
-                console.log(err, res);
-            });
-    }
+    //     witai_speech.ASR({
+    //         file: './demo.wav', 
+    //         developer_key: process.env.WIT_KEY,
+    //         }, function (err, res) {
+    //             console.log(err, res);
+    //         });
+    // }
     //----------------------------------------------
     // Web Server Socket handling
-    wsServer.on('connection', function connection(socket, req, client) {
+    wsServer.on('connection', function connection(socket, req) {
         const clientIP = req.socket.remoteAddress;
+        
 
         const introMsg = [
             "Hello. I'm SoCoLaBot! I'm here to assist you :)"
@@ -144,7 +145,7 @@ module.exports = function(wsServer) {
                             botMsg1 = "Your action has been captured! " 
                                     + "The observed labels can be seen in the Vision window and the inferred ones in the GG window. "
                                     + "The predicted state of your object is displayed by the Reasoner.";
-                            inProgress_captureAction = false;
+                            // inProgress_captureAction = false;
                         } else {
                             botMsg1 = "Object captured! "
                                     + "You can see the observed labels in the Vision window. "
@@ -189,7 +190,7 @@ module.exports = function(wsServer) {
         var captObjBotMsg    = "Alright, I'm taking a screenshot of the object. Please wait a few seconds for the results...";
 
         function handleChatbotReply(witResponse) {
-            wit_Reply = witResponse;
+            // wit_Reply = witResponse;
 
             console.log(witResponse);
 
@@ -198,7 +199,7 @@ module.exports = function(wsServer) {
                 console.log("[wit] no intent matched!")
                 log.ERROR = (`No intent matched input "${userMsg}"`);
                 botReply = "I'm not sure I understand, can you try again?";
-                botReply2= "If you need help type \"help\". If you want to start over you can ask me to start a new session by refreshing the page.";
+                let botReply2= "If you need help type \"help\". If you want to start over you can ask me to start a new session by refreshing the page.";
                 
                 setupSocketMsg("botMessage", botReply);
                 sendToClients(socketJSONmsg);
@@ -228,7 +229,7 @@ module.exports = function(wsServer) {
             if (!isEmptyObject(wit_Traits)) {
                 // use Object.keys to retrieve all traits
                 // since trait names are not known beforehand
-                for (i=0; i< wit_TraitNames.length; i++) {
+                for (let i=0; i< wit_TraitNames.length; i++) {
                     console.log("[wit trait] ",wit_TraitNames[i], "\t", wit_Traits[wit_TraitNames[i]][0].value);
                 }
             }
@@ -269,7 +270,7 @@ module.exports = function(wsServer) {
                     sendToClients(socketJSONmsg);
                     return;
                 } else { 
-                    inProgress_captureAction = true; 
+                    // inProgress_captureAction = true; 
                     botReply = captActionBotMsg;
                 }
             // ---> help intent
