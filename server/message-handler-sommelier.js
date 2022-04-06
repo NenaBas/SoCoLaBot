@@ -1,12 +1,10 @@
-const {Wit, log} = require('node-wit');
-
 const ws        = require('ws');
 const stringify = require('json-stringify-pretty-compact');
 
 module.exports = function(wsServer) {
     
-    // types:   botMessage, userMessage quickReplies
-    // sender:  Chatbot, GUI
+    // types:   botMessage, userMessage, quickReplies, uList
+    // sender:  Chatbot, UI, Server
     var socketJSONmsg = {
         type: "types",  
         text: "msgSent",
@@ -20,6 +18,7 @@ module.exports = function(wsServer) {
     function setupSocketMsg(type, text) {   // the sender is always Server
         socketJSONmsg.type  = type;
         socketJSONmsg.text  = text;
+        socketJSONmsg.sender= "Server";
     }
     //----------------------------------------------
     // check if a JSON obj is empty
@@ -31,7 +30,6 @@ module.exports = function(wsServer) {
         }
         return true;
     }
-
     
     //----------------------------------------------
     // Web Server Socket handling
@@ -54,10 +52,8 @@ module.exports = function(wsServer) {
 
         
         socket.on('message', message => {
-            // console.log("---------------Client said:\n"+message);
             var msgFromClient = JSON.parse(message);
-            // console.log("Client told me: "+message);
-            console.log(`[${msgFromClient.sender}] msg: ${msgFromClient.text}`);
+            console.log(`[${msgFromClient.sender}] ${msgFromClient.text}`);
             
             // broadcast the message to all the clients
             wsServer.clients.forEach(client => {
@@ -67,6 +63,12 @@ module.exports = function(wsServer) {
             });
             if (msgFromClient.sender == "Chatbot") {
                 // console.log(`Client:${msgFromClient.sender} said ${msgFromClient.text}`);
+                if (msgFromClient.type == "quickReplies") {
+                    console.log(`[quickReplies] Client:${msgFromClient.sender} said ${msgFromClient.text}`);
+                }
+                else if (msgFromClient.type == "uList") {
+                    console.log(`[uList] Client:${msgFromClient.sender} said ${msgFromClient.text}`);
+                }
             }    
         });
 

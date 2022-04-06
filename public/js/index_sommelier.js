@@ -48,14 +48,18 @@ socket.onmessage = (event) => {
     //     botMsg = event.data.value;
     // }
     if (msg.sender == "Chatbot" && msg.type == "botMessage") {
-        addBotMsg(botMsg);
+        addBotMsg(botMsg, 'none');
     } 
-    // else if (msg.sender == "Chatbot" && msg.type == "quickReplies") {
-    //     // msg.text is a string, we should convert it to array for the function to work
-    //     var repliesArray = msg.text.split(";");
-    //     addQuickReplies(repliesArray);
-    //     addEventListener_toTheWrapper(document.querySelectorAll('.quick-replies_wrapper'));
-    // }
+    else if (msg.sender == "Chatbot" && msg.type == "quickReplies") {
+        // msg.text is a string, we should convert it to array for the function to work
+        var repliesArray = msg.text.split(";");
+        addQuickReplies(repliesArray);
+        addEventListener_toTheWrapper(document.querySelectorAll('.quick-replies_wrapper'));
+    }
+    else if (msg.sender == "Chatbot" && msg.type == "uList") {
+        var listArray = msg.text.split(";");
+        addUnorderedList(listArray);
+    }
 }
 socket.onclose = (event) => {
     if (event.wasClean) {
@@ -86,7 +90,7 @@ const sendMsg = (msgType,msgToSend) => {
  * @param {boolean} isUser
  * @returns {HTMLElement}
 */
-function getMessageElement(val, isUser) {
+function getMessageElement(val, isUser, type) {
     // Create parent message element to append all inner elements
     var newUserMessage = document.createElement('div');
     
@@ -95,13 +99,35 @@ function getMessageElement(val, isUser) {
         newUserMessage.className += 'chat-message--right ';
     }
 
-    // Create text
-    var text = document.createElement('p');
-    text.append(val);
-    text.className += 'chat-message__text';
+    if(Array.isArray(val) && type === 'uList'){
+        var text = document.createElement('p');
+        text.className += 'chat-message__text';
+
+        var ul = document.createElement('ul');
+        val.forEach(msg => {
+            var li = document.createElement('li');
+            // Create text
+            li.append('● ',msg);
+            ul.append(li);
+        });
+        text.append(ul);
+        console.log(ul);
+
+        // Append elements
+        newUserMessage.append(text);
+    }
+    else{
+        // Create text
+        var text = document.createElement('p');
+        text.append(val);
+        text.className += 'chat-message__text';
+
+        // Append elements
+        newUserMessage.append(text);
+    }
 
     // Append elements
-    newUserMessage.append(text);
+    // newUserMessage.append(text);
     newUserMessage.className += 'chat-message ';
 
     return newUserMessage;
@@ -125,7 +151,6 @@ chatForm[0].addEventListener('submit', function(e) {
 
     // If reply is loading, wait
     if (loading) { return false; }
-
     // Catch empty messages
     if (!text) { return false; }
 
@@ -136,12 +161,12 @@ chatForm[0].addEventListener('submit', function(e) {
     chatInputField[0].value = '';
 
     if (quickReplies_btnActive) {
-        if (text.toUpperCase() == "YES" || text.toUpperCase() == "NO") {
+        // if (text.toUpperCase() == "YES" || text.toUpperCase() == "NO") {
             sendMsg("quickReplies",text)
             $(".quick-replies_wrapper").remove();
             quickReplies_btnActive = false;
             return;
-        }
+        // }
     } 
     // send the usermsg to the server via the websocket
     sendMsg("userMessage",text);
@@ -174,6 +199,18 @@ chatForm[0].addEventListener('submit', function(e) {
     }
 }
 
+function addUnorderedList(listItems) {
+    if (Array.isArray(listItems)) {
+        // console.log(listItems)
+        // var msg = "";
+
+        // listItems.forEach(item => {
+        //     msg += `● ${item}\n`;
+        // })
+        addBotMsg(listItems, "uList");
+    }
+}
+
 // https://javascript.info/bubbling-and-capturing
 // catch all the events inside the div wrapping the quick-reply buttons
 // the event listener needs to be added AFTER the element has been created
@@ -189,7 +226,7 @@ function addEventListener_toTheWrapper(wrapper) {
         console.log("Button's text: "+btnText);
 
         addUserMsg(btnText);
-        sendMsg("quickReplies",btnText); 
+        sendMsg("userMessage",btnText); 
         
         // after the reply is send, remove the whole div
         $(".quick-replies_wrapper").remove();
@@ -200,9 +237,9 @@ function addEventListener_toTheWrapper(wrapper) {
  * CHATBOT MESSAGES/REPLIES
  *****************************************************************************/
 // add bot message to UI
-function addBotMsg(msg) {
+function addBotMsg(msg, type) {
     // Add user's message to the chat log
-    var newBotMessage = getMessageElement(msg, false);  // true is user, false is bot
+    var newBotMessage = getMessageElement(msg, false, type);  // true is user, false is bot
     chatLog[0].append(newBotMessage);
     // Scroll to last message
     scrollContents(chatLog[0]);
